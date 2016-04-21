@@ -41,6 +41,12 @@
 
         <cobertura.version>2.7</cobertura.version>
 
+        <jacoco.version>0.7.5.201505241946</jacoco.version>
+        <jacoco.path>${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar</jacoco.path>
+        <jacoco.utReport>${project.build.directory}/jacoco.exec</jacoco.utReport>
+        <jacoco.utAgentConfig>-javaagent:${jacoco.path}=destfile=${jacoco.utReport}</jacoco.utAgentConfig>
+        <jacoco-listeners.version>3.5</jacoco-listeners.version>
+
     </properties>
 
     <dependencyManagement>
@@ -271,6 +277,20 @@
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>org.jacoco.agent</artifactId>
+            <version>${jacoco.version}</version>
+            <classifier>runtime</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sonarsource.java</groupId>
+            <artifactId>sonar-jacoco-listeners</artifactId>
+            <version>${jacoco-listeners.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <!-- Maven plugin versions are mentioned in order to guarantee the build reproducibility in the long term -->
@@ -305,9 +325,23 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.13</version>
                 <configuration>
+                    <!-- JDK 7 - relax bytecode verifier to prevent double -->
+                    <!-- instrumentation issues with OpenJPA tests and JaCoCo -->
+                    <!-- <argLine>-XX:-UseSplitVerifier ${jacoco.utAgentConfig}</argLine> -->
+                    <!-- JDK 8 - bytecode verifier cannot be relaxed or disabled -->
+                    <!-- to prevent runtime errors, OpenJPA tests are ignored -->
+                    <argLine>${jacoco.utAgentConfig}</argLine>
                     <includes>
                         <include>**/*Tests.java</include>
                     </includes>
+                    <properties>
+                        <!-- add SonarQube's JaCoCo listener to enable -->
+                        <!-- gathering of code coverage metrics per test -->
+                        <property>
+                            <name>listener</name>
+                            <value>org.sonar.java.jacoco.JUnitListener</value>
+                        </property>
+                    </properties>
                 </configuration>
             </plugin>
             <plugin>
