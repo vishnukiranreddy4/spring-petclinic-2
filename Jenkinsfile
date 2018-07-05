@@ -33,7 +33,7 @@ pipeline {
                 echo "Checking the Build number $BUILD_NUMBER"
                 script{
                     // requires SonarQube Scanner 2.8+
-                    scannerHome = tool 'Sonar_Scanner'
+                    scannerHome = tool 'ADOP SonarScanner'
                     withSonarQubeEnv('ADOP Sonar') {
                         echo "SONAR_PROJECT_NAME $env.SONAR_PROJECT_NAME"
                         echo "SONAR_PROJECT_KEY $env.SONAR_PROJECT_KEY"
@@ -107,7 +107,7 @@ pipeline {
                         mvn clean -B test -DPETCLINIC_URL=${APP_URL} -DZAP_IP=${ZAP_IP} -DZAP_PORT=${ZAP_PORT} -DZAP_ENABLED=${ZAP_ENABLED}
 
                         echo "Stopping OWASP ZAP Proxy and generating report."
-                        echo "Conatiner ${CONTAINER_NAME}"
+                        echo "Container ${CONTAINER_NAME}"
                         docker stop ${CONTAINER_NAME}
                         docker rm ${CONTAINER_NAME}
                     
@@ -186,7 +186,7 @@ pipeline {
             steps{
                 echo 'This job deploys the java reference application to the ProdB environment'
                 timeout(time:5, unit:'MINUTES') {
-                    input('! Deploy to Test Environment?')
+                    input('! Deploy to Prod B Environment?')
                 }
                 sh '''
                     set -x
