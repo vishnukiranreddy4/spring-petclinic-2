@@ -463,7 +463,7 @@
                 <version>1.4.9</version>
                 <configuration>
                     <repository>trranjith/${project.artifactId}</repository>
-                    <tag>1</tag>
+                    <tag>2</tag>
                 </configuration>
             </plugin>
             <!-- end::plugin[] -->
