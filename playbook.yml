@@ -26,7 +26,7 @@
     command: "mv /usr/local/apache-tomcat-{{tomcat_version}} /usr/local/tomcat9"
 
   - name: copying war file into tomcat server
-    copy: "src='**/target/petclinic.war' dest='/usr/local/tomcat9/webapps/'"
+    copy: "src='target/petclinic.war' dest='/usr/local/tomcat9/webapps/'"
     tags:
     - modify_war
 
