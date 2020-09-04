@@ -21,14 +21,17 @@
 
   - name: Extracting downloaded tomcat
     unarchive: "src=/usr/local/apache-tomcat-{{tomcat_version}}.tar.gz dest=/usr/local/ remote_src=yes"
-
+    ignore_errors: yes
+    
   - name: Renaming the extracted tomcat folder
     command: "mv /usr/local/apache-tomcat-{{tomcat_version}} /usr/local/tomcat9"
+    ignore_errors: yes
 
   - name: copying war file into tomcat server
     copy: "src='target/petclinic.war' dest='/usr/local/tomcat9/webapps/'"
     tags:
     - modify_war
+    ignore_errors: yes
 
   - name: Modifying tomcat port
     template: "src=server.xml.j2 dest=/usr/local/tomcat9/conf/server.xml"
